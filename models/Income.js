@@ -1,19 +1,8 @@
 const mongoose = require("mongoose");
 
-const IncomeSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true
-  },
-  amount: {
-    type: Number,
-    required: true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+const incomeSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  income: { type: Number, default: 0 }
+}, { timestamps: true });
 
-module.exports = mongoose.model("Income", IncomeSchema);
+module.exports = mongoose.model("Income", incomeSchema);

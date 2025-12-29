@@ -2,49 +2,48 @@ const express = require("express");
 const router = express.Router();
 const Expense = require("../models/Expense");
 
-// Add Expense
-router.post("/", async (req, res) => {
+router.post("/:userId", async (req, res) => {
   try {
-    const { userId, title, category, amount, date } = req.body;
-    const expense = new Expense({ userId, title, category, amount, date });
+    const expense = new Expense({
+      userId: req.params.userId,
+      ...req.body
+    });
+
     await expense.save();
-    res.json({ message: "Expense added", expense });
+    res.status(201).json(expense);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// Get User Expenses
 router.get("/:userId", async (req, res) => {
   try {
-    const expenses = await Expense.find({ userId: req.params.userId }).sort({ date: -1 });
+    const expenses = await Expense.find({ userId: req.params.userId });
     res.json(expenses);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// Update Expense
 router.put("/:id", async (req, res) => {
   try {
-    const expense = await Expense.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json({ message: "Expense updated", expense });
+    const updated = await Expense.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.json(updated);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// Delete Expense
 router.delete("/:id", async (req, res) => {
   try {
     await Expense.findByIdAndDelete(req.params.id);
-    res.json({ message: "Expense deleted" });
+    res.json({ message: "Deleted" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: err.message });
   }
 });
 

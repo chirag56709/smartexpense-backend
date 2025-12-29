@@ -2,37 +2,33 @@ const express = require("express");
 const router = express.Router();
 const Income = require("../models/Income");
 
-// Add / Update Income
-router.post("/", async (req, res) => {
+router.get("/:userId", async (req, res) => {
   try {
-    const { userId, amount } = req.body;
-
-    // Check if user already has income
-    let income = await Income.findOne({ userId });
-    if (income) {
-      income.amount = amount; // update
-      await income.save();
-      return res.json({ message: "Income updated", income });
+    let doc = await Income.findOne({ userId: req.params.userId });
+    if (!doc) {
+      return res.json({ income: 0 });
     }
-
-    // New income
-    income = new Income({ userId, amount });
-    await income.save();
-    res.json({ message: "Income saved", income });
+    res.json(doc);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// Get User Income
-router.get("/:userId", async (req, res) => {
+router.post("/:userId", async (req, res) => {
   try {
-    const income = await Income.findOne({ userId: req.params.userId });
-    res.json({ income: income ? income.amount : 0 });
+    const { income } = req.body;
+
+    let doc = await Income.findOne({ userId: req.params.userId });
+    if (!doc) {
+      doc = new Income({ userId: req.params.userId, income });
+    } else {
+      doc.income = income;
+    }
+
+    await doc.save();
+    res.json(doc);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: err.message });
   }
 });
 
