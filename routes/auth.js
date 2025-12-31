@@ -51,7 +51,7 @@ router.post("/forgot-password", async (req, res) => {
       return res.json({ message: "User not found" });
     }
 
-    user.password = newPassword; // ⚠️ plain password (learning purpose)
+    user.password = newPassword;
     await user.save();
 
     res.json({ message: "Password reset successful" });
