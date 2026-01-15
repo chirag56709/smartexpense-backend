@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 
-/* SIGNUP */
+//SIGNUP 
 router.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -37,7 +37,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// FORGOT PASSWORD (SIMPLE)
+// FORGOT PASSWORD
 router.post("/forgot-password", async (req, res) => {
   try {
     const { email, newPassword } = req.body;
